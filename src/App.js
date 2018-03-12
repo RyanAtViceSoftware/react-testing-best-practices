@@ -20,7 +20,7 @@ class App extends Component {
       <div className="App">
         {!this.state.posts.length && <h3>Loading...</h3>}
         <ul>
-          {this.state.posts.map(p => <li>{p.title}</li>)}
+          {this.state.posts.map(p => <li key={p.id}>{p.title}</li>)}
         </ul>
       </div>
     );
@@ -31,7 +31,7 @@ function getPosts() {
   return http.get('/posts', { dummyData: getDummyPosts() });
 }
 
-const http = {
+export const http = {
   get: (url, { dummyData } = {}) => new Promise(resolve =>
     setTimeout(() => {
         resolve(dummyData);
