@@ -23,6 +23,7 @@ describe('Given we load our app ', () => {
   describe('When we have posts on the server ', () => {
     it('Then we get posts written to the screen', done => {
       http.get = sinon.stub();
+
       http.get
         .withArgs('/posts')
         .returns(Promise.resolve(getDummyPosts()));
@@ -31,11 +32,13 @@ describe('Given we load our app ', () => {
 
       expect(app).toBeTruthy();
 
-      console.log('settimeout');
-
       setTimeout(() => {
         app.update();
-        console.log(app.debug());
+
+        const posts = app.find('li');
+
+        expect(posts.getElements().length).toBe(3);
+
         done();
       });
     });
