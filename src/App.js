@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 import './App.css';
 
 class App extends Component {
@@ -37,13 +38,18 @@ function getPosts() {
   );
 }
 
+const baseUrl = `http://jsonplaceholder.typicode.com`;
+
 export const http = {
-  get: (url, config, { dummyData } = {}) => new Promise(resolve =>
-    setTimeout(() => {
-        resolve(dummyData);
-      }, 1000
-    )
-  )
+  get: (url, config, { dummyData } = {}) =>
+    dummyData ?
+      new Promise(resolve =>
+        setTimeout(() => {
+            resolve(dummyData);
+          }, 1000
+        )
+      )
+      : axios.get(baseUrl + url, config).then(r => r.data)
 };
 
 function getDummyPosts() {
