@@ -16,6 +16,7 @@ class App extends Component {
   }
 
   render() {
+    console.log(`rendering post count: ${this.state.posts.length}`);
     return (
       <div className="App">
         {!this.state.posts.length && <h3>Loading...</h3>}
@@ -45,6 +46,7 @@ export const http = {
 }
 
 function getDummyPosts() {
+  console.log('getDummyPosts');
   return [
     {
       "userId": 1,
