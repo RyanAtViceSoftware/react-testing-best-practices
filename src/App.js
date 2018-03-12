@@ -18,6 +18,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        {!this.state.posts.length && <h3>Loading...</h3>}
         <ul>
           {this.state.posts.map(p => <li>{p.title}</li>)}
         </ul>
