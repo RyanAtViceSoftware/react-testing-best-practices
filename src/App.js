@@ -28,11 +28,15 @@ class App extends Component {
 }
 
 function getPosts() {
-  return http.get('/posts', { dummyData: getDummyPosts() });
+  return http.get(
+    '/posts',
+    null,
+    { dummyData: getDummyPosts() }
+  );
 }
 
 export const http = {
-  get: (url, { dummyData } = {}) => new Promise(resolve =>
+  get: (url, config, { dummyData } = {}) => new Promise(resolve =>
     setTimeout(() => {
         resolve(dummyData);
       }, 1000
