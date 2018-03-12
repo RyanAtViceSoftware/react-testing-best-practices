@@ -9,12 +9,23 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe('Given we load our app ', () => {
   it('Then renders without crashing', () => {
+    http.get = sinon.stub();
+
+    http.get
+      .withArgs('/posts')
+      .returns(Promise.resolve(getDummyPosts()));
+
     const div = document.createElement('div');
     ReactDOM.render(<App />, div);
-    ReactDOM.unmountComponentAtNode(div);
   });
 
   it('Then it shows a loading indicator', () => {
+    http.get = sinon.stub();
+
+    http.get
+      .withArgs('/posts')
+      .returns(Promise.resolve(getDummyPosts()));
+
     const app = mount(<App/>);
 
     expect(app.getElements().length).toBeTruthy();
