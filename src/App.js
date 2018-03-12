@@ -11,7 +11,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    getAsyncDummyPosts()
+    getPosts()
       .then(posts => this.setState({ posts: posts}));
   }
 
@@ -27,13 +27,17 @@ class App extends Component {
   }
 }
 
-function getAsyncDummyPosts() {
-  return new Promise(resolve =>
+function getPosts() {
+  return http.get('/posts', { dummyData: getDummyPosts() });
+}
+
+const http = {
+  get: (url, { dummyData } = {}) => new Promise(resolve =>
     setTimeout(() => {
-        resolve(getDummyPosts());
+        resolve(dummyData);
       }, 1000
     )
-  );
+  )
 }
 
 function getDummyPosts() {
@@ -58,5 +62,7 @@ function getDummyPosts() {
     }
   ];
 }
+
+
 
 export default App;
