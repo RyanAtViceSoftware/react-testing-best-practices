@@ -20,7 +20,9 @@ class App extends Component {
       <div className="App">
         {!this.state.posts.length && <h3>Loading...</h3>}
         <ul>
-          {this.state.posts.map(p => <li key={p.id}>{p.title}</li>)}
+          {this.state.posts.map(
+            p => <li key={p.id}>{p.title}</li>)
+          }
         </ul>
       </div>
     );
