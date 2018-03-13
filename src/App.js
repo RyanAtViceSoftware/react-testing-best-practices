@@ -89,9 +89,7 @@ export const http = {
           }, 1000
         )
       )
-      : axios.get(baseUrl + url, config).then(r => {
-        return r.data;
-      })
+      : axios.get(baseUrl + url, config).then(r => r.data)
 };
 
 export default App;
