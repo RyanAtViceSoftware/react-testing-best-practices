@@ -19,7 +19,7 @@ class App extends Component {
 
     this.setState({ fetching: true });
 
-    getUserByUserName(this.input.value)
+    getUserByUserName(this.state.username)
       .then(user => user.length && user[0].id)
       .then(getPostsByUserId)
       .then(posts => this.setState({
@@ -27,8 +27,11 @@ class App extends Component {
         fetching: false,
         error: null
       }))
-      .catch(error => {
-        this.setState({error, fetching: false});
+      .catch(e => {
+        this.setState({
+          error: e.message,
+          fetching: false
+        });
       });
   }
 
@@ -38,7 +41,10 @@ class App extends Component {
         <input
           type="text"
           placeholder="Username"
-          ref={(input) => this.input = input}
+          onChange={
+            e => this.setState({
+              username: e.target.value
+            })}
         />
         <button onClick={this.getPosts}>Get Posts</button>
         <br/>
@@ -66,7 +72,9 @@ function getUserByUserName(username) {
 
 function getPostsByUserId(userId) {
   if (!userId) {
-    return Promise.reject('User not found');
+    return Promise.reject(
+      new Error('User not found')
+    );
   }
 
   return http.get(
