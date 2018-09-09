@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
+import waitForExpect from 'wait-for-expect';
 import App, { http } from './App';
 import sinon from 'sinon';
 
@@ -20,6 +21,24 @@ describe('Given we load our app ', () => {
   });
 
   describe('When fill in a username and click Get Posts ', () => {
+    describe('And the server returns an error', () => {
+      it('Then it shows the error', async () => {
+        return mountApp({
+          userResponse: () => Promise.reject({ message: 'error message'})
+        })
+        .then(addUserNameAndClickGetPosts)
+        .then(({app}) =>
+          waitForExpect(() => {
+            app.update();
+
+            const error = app.find('p');
+
+            expect(error.getElements().length)
+              .toBeTruthy();
+          })
+        );
+      });
+    });
 
     it('Then it shows a loading indicator', async () => {
       return mountApp()
@@ -44,22 +63,22 @@ describe('Given we load our app ', () => {
           async () => {
             return mountApp()
               .then(addUserNameAndClickGetPosts)
-              .then(({app}) => {
-                setTimeout(() => {
+              .then(({app}) =>
+                waitForExpect(() => {
                   app.update();
 
                   const posts = app.find('li');
 
                   expect(posts.getElements().length)
                     .toBe(3);
-                });
-              });
+                })
+              );
           });
       });
   });
 });
 
-function mountApp() {
+function mountApp({ userResponse } = {}) {
   http.get = sinon.stub();
   const username = 'Bret';
 
@@ -73,7 +92,7 @@ function mountApp() {
         username
       }
     })
-    .returns(Promise.resolve(getDummyUser()));
+    .returns(userResponse ? userResponse() : Promise.resolve(getDummyUser()));
 
   const app = mount(<App/>);
   return Promise.resolve({app, http, username});
