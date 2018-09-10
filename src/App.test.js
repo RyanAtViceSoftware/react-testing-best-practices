@@ -22,7 +22,7 @@ describe('Given we load our app ', () => {
   describe('When fill in a username and click Get Posts ', () => {
     describe('And the server returns an error', () => {
       it('Then it shows the error', done => {
-        return mountApp({
+        mountApp({
           userResponse: () => Promise.reject({ message: 'error message'})
         })
         .then(addUserNameAndClickGetPosts)
