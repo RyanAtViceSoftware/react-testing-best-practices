@@ -2,6 +2,37 @@ import React, {Component} from 'react';
 import axios from 'axios';
 import './App.css';
 
+const GetPostsForm = ({onUserNameChange, onGetPostsClicked}) => (
+  <React.Fragment>
+    <input
+      type="text"
+      placeholder="Username"
+      onChange={onUserNameChange}
+    />
+    <button onClick={onGetPostsClicked}>Get Posts</button>
+  </React.Fragment>
+);
+
+const Posts = ({posts}) => (
+  <ul>
+    {posts.map(
+      p => <li key={p.id}>{`${p.userId}: ${p.title}`}</li>)
+    }
+  </ul>
+);
+
+const ErrorMessage =({error}) => (
+  <div>
+    {error && <p style={{color: 'red'}}>{error}</p>}
+  </div>
+);
+
+const LoadingIndicator = ({fetching}) => (
+  <div>
+    {fetching && <h3>Loading...</h3>}
+  </div>
+);
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -19,17 +50,15 @@ class App extends Component {
 
     this.setState({ fetching: true });
 
-    getUserByUserName(this.state.username)
-      .then(user => user.length && user[0].id)
-      .then(getPostsByUserId)
+    getPostsByUserName(this.state.username)
       .then(posts => this.setState({
         posts: posts,
         fetching: false,
         error: null
       }))
-      .catch(e => {
+      .catch(error => {
         this.setState({
-          error: e.message,
+          error: error.message,
           fetching: false
         });
       });
@@ -38,26 +67,25 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <input
-          type="text"
-          placeholder="Username"
-          onChange={
-            e => this.setState({
-              username: e.target.value
-            })}
+        <GetPostsForm
+          onUserNameChange={e => this.setState({
+            username: e.target.value
+          })}
+          onGetPostsClicked={this.getPosts}
         />
-        <button onClick={this.getPosts}>Get Posts</button>
+        <Posts posts={this.state.posts}/>
+        <ErrorMessage error={this.state.error}/>
         <br/>
-        {this.state.error && <p style={{color: 'red'}}>{this.state.error}</p>}
-        {this.state.fetching && <h3>Loading...</h3>}
-        <ul>
-          {this.state.posts.map(
-            p => <li key={p.id}>{`${p.userId}: ${p.title}`}</li>)
-          }
-        </ul>
+        <LoadingIndicator fetching={this.state.fetching}/>
       </div>
     );
   }
+}
+
+function getPostsByUserName(username) {
+  return getUserByUserName(username)
+    .then(user => user.length && user[0].id)
+    .then(getPostsByUserId);
 }
 
 function getUserByUserName(username) {
@@ -97,7 +125,8 @@ export const http = {
           }, 1000
         )
       )
-      : axios.get(baseUrl + url, config).then(r => r.data)
+      : axios.get(baseUrl + url, config)
+          .then(r => r.data)
 };
 
 export default App;
