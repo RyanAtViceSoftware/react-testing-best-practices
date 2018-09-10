@@ -42,7 +42,7 @@ describe('Given we load our app ', () => {
     });
 
     it('Then it shows a loading indicator', async () => {
-      return mountApp()
+      mountApp()
         .then(addUserNameAndClickGetPosts)
         .then(({app}) => {
           const loadingIndicator = app.find('h3');
