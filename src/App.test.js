@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Enzyme, { mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-import waitForExpect from 'wait-for-expect';
 import App, { http } from './App';
 import sinon from 'sinon';
 
@@ -22,19 +21,21 @@ describe('Given we load our app ', () => {
 
   describe('When fill in a username and click Get Posts ', () => {
     describe('And the server returns an error', () => {
-      it('Then it shows the error', async () => {
+      it('Then it shows the error', done => {
         return mountApp({
           userResponse: () => Promise.reject({ message: 'error message'})
         })
         .then(addUserNameAndClickGetPosts)
         .then(({app}) =>
-          waitForExpect(() => {
+          setTimeout(() => {
             app.update();
 
             const error = app.find('p');
 
             expect(error.getElements().length)
               .toBeTruthy();
+
+            done();
           })
         );
       });
@@ -60,17 +61,19 @@ describe('Given we load our app ', () => {
     describe('And we have posts on the server ',
       () => {
         it('Then we get posts written to the screen',
-          async () => {
-            return mountApp()
+          done => {
+            mountApp()
               .then(addUserNameAndClickGetPosts)
               .then(({app}) =>
-                waitForExpect(() => {
+                setTimeout(() => {
                   app.update();
 
                   const posts = app.find('li');
 
                   expect(posts.getElements().length)
                     .toBe(3);
+
+                  done();
                 })
               );
           });
