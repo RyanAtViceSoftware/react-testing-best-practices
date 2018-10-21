@@ -4,6 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start:client": "cd client && npm start",
+    "start:server": "cd server && npm start",
+    "debug:server": "cd server && npm run debug",
+    "start": "concurrently --kill-others-on-fail \"npm run start:server\" \"npm run start:client\"",
+    "debug": "concurrently --kill-others-on-fail \"npm run debug:server\" \"npm run start:client\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -15,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/RyanAtViceSoftware/react-testing-best-practices/issues"
   },
-  "homepage": "https://github.com/RyanAtViceSoftware/react-testing-best-practices#readme"
+  "homepage": "https://github.com/RyanAtViceSoftware/react-testing-best-practices#readme",
+  "devDependencies": {
+    "concurrently": "^4.0.1"
+  }
 }
