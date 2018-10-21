@@ -114,8 +114,6 @@ function getPostsByUserId(userId) {
   );
 }
 
-const baseUrl = `http://jsonplaceholder.typicode.com`;
-
 export const http = {
   get: (url, config, { dummyData } = {}) =>
     dummyData ?
@@ -125,7 +123,7 @@ export const http = {
           }, 1000
         )
       )
-      : axios.get(baseUrl + url, config)
+      : axios.get(url, config)
           .then(r => r.data)
 };
 
