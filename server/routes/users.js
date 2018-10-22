@@ -1,11 +1,15 @@
 const express = require("express");
-const UsersRepository = require("../data/usersRepository");
+const usersRepository = require("../data/usersRepository");
 
 const router = express.Router();
 
 /* GET users listing. */
 router.get("/", function(req, res, next) {
-  new UsersRepository().getAll({...req.query}).then(users => res.json(users));
+  usersRepository.getAll({...req.query})
+    .then(users => res.json(users))
+    .catch(e => {
+      console.log(e);
+    });
 });
 
 module.exports = router;
