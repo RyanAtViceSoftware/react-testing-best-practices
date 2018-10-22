@@ -12,13 +12,10 @@ chai.use(chaiHttp);
 
 describe("Given we GET /users ", () => {
   describe("When we have users", () => {
-    it("Then we are returned users array in json", done => {
+    it("Then we are returned users array in response json", done => {
       userRepository.getAll = () => Promise.resolve(getDummyUsers());
 
       const app = require('../app');
-
-      expect(true).to.equal(true);
-
 
       chai.request(app)
         .get('/users')
@@ -28,6 +25,66 @@ describe("Given we GET /users ", () => {
           }
 
           expect(r.body).to.deep.equal(getDummyUsers());
+        })
+        .then(() => done())
+        .catch(done);
+
+    });
+  });
+
+  describe("When we pass a username for a user we have on query string", () => {
+    it("Then we are returned the associated user in response json", done => {
+      userRepository.getAll = sinon.stub();
+
+      const expectedUsername = 'Bret';
+
+      const expectedUser = getDummyUsers().filter(u => u.username === expectedUsername);
+
+      userRepository.getAll
+        .withArgs({username: expectedUsername})
+        .returns(Promise.resolve(expectedUser));
+
+      const app = require('../app');
+
+      chai.request(app)
+        .get('/users')
+        .query({username: expectedUsername})
+        .then(r => {
+          if (r.error) {
+            done(r.text)
+          }
+
+          expect(r.body).to.deep.equal(expectedUser);
+        })
+        .then(() => done())
+        .catch(done);
+
+    });
+  });
+
+  describe("When we pass a username for a user we don't have on query string", () => {
+    it("Then we are returned the associated user in response json", done => {
+      userRepository.getAll = sinon.stub();
+
+      const expectedUsername = 'foo';
+
+      const expectedUser = getDummyUsers().filter(u => u.username === expectedUsername);
+
+      userRepository.getAll
+        .withArgs({username: expectedUsername})
+        .returns(Promise.resolve(expectedUser));
+
+      const app = require('../app');
+
+      chai.request(app)
+        .get('/users')
+        .query({username: expectedUsername})
+        .then(r => {
+          if (r.error) {
+            done(r.text)
+          }
+
+          expect(r.body).to.deep.equal(expectedUser);
         })
         .then(() => done())
         .catch(done);
