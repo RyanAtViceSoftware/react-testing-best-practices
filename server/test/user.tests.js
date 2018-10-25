@@ -63,16 +63,18 @@ describe("Given we GET /users ", () => {
   });
 
   describe("When we pass a username for a user we don't have on query string", () => {
-    it("Then we are returned the associated user in response json", done => {
+    it("Then we empty array in json", done => {
       userRepository.getAll = sinon.stub();
 
       const expectedUsername = 'foo';
 
-      const expectedUser = getDummyUsers().filter(u => u.username === expectedUsername);
+      const dummyResponse = getDummyUsers().filter(u => u.username === expectedUsername);
+
+      const expectedUser = [];
 
       userRepository.getAll
         .withArgs({username: expectedUsername})
-        .returns(Promise.resolve(expectedUser));
+        .returns(Promise.resolve(dummyResponse));
 
       const app = require('../app');
 
